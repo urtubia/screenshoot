@@ -93,6 +93,11 @@ getScreenshotPath().then( (path) => {
         var url = "https://s3.amazonaws.com/" + process.env.S3_BUCKET_NAME + "/" + generatedKeyname;
         pbcopy(url);
         console.log("Pasted URL to clipboard: " + url);
+        var notificationOptions = {
+          title: "Screenshot Uploaded",
+          body: `${url} copied to clipboard`
+        };
+        new Notification('basic', notificationOptions);
       });
 
     });
