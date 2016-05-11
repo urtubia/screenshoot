@@ -9,14 +9,14 @@ const globalShortcut = electron.globalShortcut;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 800, height: 600});
 
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html')
+  mainWindow.loadURL('file://' + __dirname + '/public/index.html')
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
@@ -29,7 +29,7 @@ function createWindow () {
     mainWindow = null
   })
 
-  globalShortcut.register('Command+Shift+4', () => { console.log("Pushed cmd 4"); })
+  //globalShortcut.register('Command+Shift+4', () => { console.log("Pushed cmd 4"); })
 }
 
 // This method will be called when Electron has finished
