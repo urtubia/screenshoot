@@ -3,6 +3,7 @@ const fs = require('fs');
 const s3 = require('s3');
 const uuid = require('node-uuid');
 const child_process = require('child_process');
+const process = require('process');
 
 
 var exec = child_process.exec;
@@ -79,6 +80,7 @@ getScreenshotPath().then( (path) => {
 
       var generatedKeyname = uuid.v1() + '.png';
       console.log('GeneratedKeyname: ' + generatedKeyname);
+      console.log('bucket: ' + process.env.S3_BUCKET_NAME);
 
       var uploadParams = {
         localFile:  path,
