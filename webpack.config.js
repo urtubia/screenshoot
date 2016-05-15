@@ -1,8 +1,19 @@
 var webpack = require('webpack');
+var util = require('util');
+
+var app = ['./javascripts/entry.js'];
+
+if (process.env.WEBPACK_DEV_SERVER == 'true'){
+  console.log("Including webpack webserver in app");
+  app = [
+      'webpack/hot/dev-server', 
+      'webpack-dev-server/client?http://localhost:8080',
+      './javascripts/entry.js'];
+}
 
 module.exports = {
   entry: {
-    app: ['webpack/hot/dev-server', './javascripts/entry.js'],
+    app: app
   },
   output: {
     path: './public/built',

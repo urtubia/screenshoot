@@ -69,7 +69,7 @@ getScreenshotPath().then( (path) => {
     fs.stat(path, (err, stats) => {
       var now = new Date();
       var timeSinceStartWatch = (now - startWatchTime);
-      console.log(`timeStartWatch=${timeSinceStartWatch}`)
+      //console.log(`timeStartWatch=${timeSinceStartWatch}`)
       if(timeSinceStartWatch < TIME_TO_IGNORE_ADD_REPORTS_FROM_START){
         return;
       }
