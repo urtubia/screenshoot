@@ -29,6 +29,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "babel-preset-react": "^6.5.0",
     "chokidar": "^1.4.3",
     "node-uuid": "^1.4.7",
     "react": "^15.0.2",
