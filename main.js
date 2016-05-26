@@ -1,15 +1,14 @@
-const electron = require('electron')
+const electron = require('electron');
+const screenshoot = require('./screenshoot');
 
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
+const app = electron.app;
 const BrowserWindow = electron.BrowserWindow
 const globalShortcut = electron.globalShortcut;
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let appIconnull;
 
 function createWindow () {
   // Create the browser window.
@@ -29,20 +28,7 @@ function createWindow () {
     mainWindow = null
   })
 
-  //globalShortcut.register('Command+Shift+4', () => { console.log("Pushed cmd 4"); })
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
-
-const Menu = electron.Menu;
-const Tray = electron.Tray;
-
-let appIcon = null;
-app.on('ready', () => {
-  appIcon = new Tray('./ic.png');
+  appIcon = new Tray('./graphics/trayicon.png');
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Item1', type: 'radio' },
     { label: 'Item2', type: 'radio' },
@@ -51,8 +37,17 @@ app.on('ready', () => {
   ]);
   appIcon.setToolTip('This is my application.');
   appIcon.setContextMenu(contextMenu);
-});
 
+  screenshoot.startWatching();
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow);
+
+const Menu = electron.Menu;
+const Tray = electron.Tray;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -71,5 +66,3 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

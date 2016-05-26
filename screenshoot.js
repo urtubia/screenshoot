@@ -3,8 +3,6 @@ const fs = require('fs');
 const s3 = require('s3');
 const uuid = require('node-uuid');
 const child_process = require('child_process');
-const process = require('process');
-
 
 var exec = child_process.exec;
 
@@ -62,49 +60,55 @@ var client = s3.createClient({
   }
 });
 
-getScreenshotPath().then( (path) => {
-  var startWatchTime = new Date();
-  // One-liner path directory, ignores .dotfiles
-  chokidar.watch(path, {ignored: /[\/\\]\./}).on('all', (event, path) => {
-    fs.stat(path, (err, stats) => {
-      var now = new Date();
-      var timeSinceStartWatch = (now - startWatchTime);
-      console.log(`timeStartWatch=${timeSinceStartWatch}`)
-      if(timeSinceStartWatch < TIME_TO_IGNORE_ADD_REPORTS_FROM_START){
-        return;
-      }
-
-      console.log(event, path);
-      console.log(stats.birthtime);
-      console.log(now - stats.birthtime);
-
-      var generatedKeyname = uuid.v1() + '.png';
-      console.log('GeneratedKeyname: ' + generatedKeyname);
-      console.log('bucket: ' + process.env.S3_BUCKET_NAME);
-
-      var uploadParams = {
-        localFile:  path,
-        s3Params: {
-          Bucket: process.env.S3_BUCKET_NAME,
-          Key: generatedKeyname
+function startWatching() {
+  getScreenshotPath().then( (path) => {
+    var startWatchTime = new Date();
+    // One-liner path directory, ignores .dotfiles
+    chokidar.watch(path, {ignored: /[\/\\]\./}).on('all', (event, path) => {
+      fs.stat(path, (err, stats) => {
+        var now = new Date();
+        var timeSinceStartWatch = (now - startWatchTime);
+        console.log(`timeStartWatch=${timeSinceStartWatch}`)
+        if(timeSinceStartWatch < TIME_TO_IGNORE_ADD_REPORTS_FROM_START){
+          return;
         }
-      };
-      var uploader = client.uploadFile(uploadParams);
-      uploader.on('error', function(err) {
-        console.error("unable to upload:", err.stack);
-      });
-      uploader.on('end', function() {
-        console.log("done uploading " + generatedKeyname);
-        var url = "https://s3.amazonaws.com/" + process.env.S3_BUCKET_NAME + "/" + generatedKeyname;
-        pbcopy(url);
-        console.log("Pasted URL to clipboard: " + url);
-        var notificationOptions = {
-          title: "Screenshot Uploaded",
-          body: `${url} copied to clipboard`
-        };
-        new Notification('basic', notificationOptions);
-      });
 
+        console.log(event, path);
+        console.log(stats.birthtime);
+        console.log(now - stats.birthtime);
+
+        var generatedKeyname = uuid.v1() + '.png';
+        console.log('GeneratedKeyname: ' + generatedKeyname);
+        console.log('bucket: ' + process.env.S3_BUCKET_NAME);
+
+        var uploadParams = {
+          localFile:  path,
+          s3Params: {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: generatedKeyname
+          }
+        };
+        var uploader = client.uploadFile(uploadParams);
+        uploader.on('error', function(err) {
+          console.error("unable to upload:", err.stack);
+        });
+        uploader.on('end', function() {
+          console.log("done uploading " + generatedKeyname);
+          var url = "https://s3.amazonaws.com/" + process.env.S3_BUCKET_NAME + "/" + generatedKeyname;
+          pbcopy(url);
+          console.log("Pasted URL to clipboard: " + url);
+          var notificationOptions = {
+            title: "Screenshot Uploaded",
+            body: `${url} copied to clipboard`
+          };
+          //new Notification('basic', notificationOptions);
+        });
+
+      });
     });
   });
-});
+}
+
+module.exports = {
+  startWatching: startWatching
+};
