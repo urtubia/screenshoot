@@ -3,7 +3,7 @@
 import ReactDOM from "react-dom";
 import React from "react";
 import * as Redux from 'redux';
-require('./screenshoot.js');
+//require('./screenshoot.js');
 
 const initialState = {
   fileList: [],
