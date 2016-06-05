@@ -7,7 +7,8 @@ var FileList = React.createClass({
     if(this.props.fileList){
       let fileList = this.props.fileList.slice();
       fileList.sort((a, b) => {
-        return a.birthtime < b.birthtime;
+        if(a.birthtime < b.birthtime) return 1;
+        return -1;
       });
       filesAsList = fileList.map(file => {
         if(file.url != null){
