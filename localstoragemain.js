@@ -53,7 +53,6 @@ function getItem(key) {
 
 ipcMain.on('LOCALSTORAGEMAIN_GETITEM_RESPONSE', (events, args) => {
   promiseStruct = _getRequestPromises[args.key];
-  console.log(args);
   promiseStruct.resolve(args.value);
 });
 
