@@ -15,10 +15,8 @@ function initPromise()
 function createLocalStorageWindow()
 {
   var localStorageWindow = new BrowserWindow({width: 100, height: 100});
+  localStorageWindow.hide();
   localStorageWindow.loadURL('file://' + __dirname + '/public/index_localstorage.html');
-  var js = `
-  `;
-  localStorageWindow.webContents.executeJavaScript(js);
   return localStorageWindow;
 }
 
