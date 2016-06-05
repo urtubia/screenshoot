@@ -3,8 +3,11 @@ const fs = require('fs');
 const s3 = require('s3');
 const uuid = require('node-uuid');
 const child_process = require('child_process');
-
+const { ipcMain } = require('electron');
 var exec = child_process.exec;
+
+let registeredWindows = [];
+let files = [];
 
 function getScreenshotPath() {
   return new Promise((resolve, reject) => {
@@ -68,14 +71,16 @@ function startWatching() {
       fs.stat(path, (err, stats) => {
         var now = new Date();
         var timeSinceStartWatch = (now - startWatchTime);
-        console.log(`timeStartWatch=${timeSinceStartWatch}`)
+        files.push({path: path});
+        registeredWindows.map(win => {
+          win.webContents.send('FILE_ADDED', {
+            path: path
+          });
+        });
+
         if(timeSinceStartWatch < TIME_TO_IGNORE_ADD_REPORTS_FROM_START){
           return;
         }
-
-        console.log(event, path);
-        console.log(stats.birthtime);
-        console.log(now - stats.birthtime);
 
         var generatedKeyname = uuid.v1() + '.png';
         console.log('GeneratedKeyname: ' + generatedKeyname);
@@ -109,6 +114,21 @@ function startWatching() {
   });
 }
 
+var registerWindow = (win) => {
+  registeredWindows.push(win);
+};
+
+var unregisterWindow = (winToUnregister) => {
+  registeredWindows = registeredWindows.filter(win => { win != winToUnregister})
+};
+
+ipcMain.on('INITIAL_FILES_REQUEST', (event, arg) => {
+  event.sender.send('INITIAL_FILES_RESPONSE', files);
+});
+
 module.exports = {
-  startWatching: startWatching
+  startWatching: startWatching,
+  registerWindow: registerWindow,
+  unregisterWindow: unregisterWindow
+
 };

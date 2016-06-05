@@ -2,38 +2,27 @@
 'use strict';
 import ReactDOM from "react-dom";
 import React from "react";
-import * as Redux from 'redux';
-//require('./screenshoot.js');
+import { Provider, connect } from 'react-redux'
+import FileList from "./components/FileList"
+import { store } from "./store/store"
 
-const initialState = {
-  fileList: [],
-};
 
-function reducer(state = initialState, action)
-{
-  switch(action.type){
-    case 'ADD_FILE':
-      return { ...state, 
-        fileList: [...state.fileList, action.payload]
-      };
-    default:
-      return state;
+var App = React.createClass({
+  render: function() {
+    return (<div>
+            <FileList/>
+            </div>)
   }
-}
-
-var store = Redux.createStore(reducer);
+});
 
 var MainComponent = React.createClass({
-  componentDidMount: () => {
-
-  },
-
-  render: () => {
+  render: function() {
     return (
-      <div>Whatuuup</div>
+      <Provider store={store}>
+        <App/>
+      </Provider>
     );
   }
-
 });
 
 ReactDOM.render(<MainComponent/>, document.getElementById('content'));

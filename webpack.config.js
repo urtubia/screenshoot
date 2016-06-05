@@ -22,7 +22,7 @@ module.exports = {
     publicPath: 'http://localhost:8080/built/'
   },
   externals: [
-    'chokidar','s3','node-uuid','fs','ipc','child_process', 'process'
+    'chokidar','s3','node-uuid','fs','ipc','child_process', 'process', 'electron'
   ],
   devServer: {
     contentBase: './public',

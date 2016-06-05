@@ -18,15 +18,27 @@ function createWindow () {
   mainWindow.loadURL('file://' + __dirname + '/public/index.html')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
+    screenshoot.unregisterWindow(mainWindow);
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
   })
+
+  screenshoot.registerWindow(mainWindow);
+
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', createWindow);
+app.on('ready', () => {
+  screenshoot.startWatching();
 
   appIcon = new Tray('./graphics/trayicon.png');
   const contextMenu = Menu.buildFromTemplate([
@@ -37,14 +49,7 @@ function createWindow () {
   ]);
   appIcon.setToolTip('This is my application.');
   appIcon.setContextMenu(contextMenu);
-
-  screenshoot.startWatching();
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+});
 
 const Menu = electron.Menu;
 const Tray = electron.Tray;
