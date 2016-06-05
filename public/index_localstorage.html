@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <script>
+var { ipcRenderer } = require('electron');
+ipcRenderer.send('LOCALSTORAGEMAIN_INIT', null);
+
+ipcRenderer.on('LOCALSTORAGEMAIN_GETITEM', (event, args) => {
+  console.log('got request for ' + args);
+  value = localStorage.getItem(args);
+  console.log('sending ' + value);
+  ipcRenderer.send('LOCALSTORAGEMAIN_GETITEM_RESPONSE', {
+    key: args,
+    value: value
+  });
+});
+
+ipcRenderer.on('LOCALSTORAGEMAIN_SETITEM', (event, args) => {
+  localStorage.setItem(args.key, args.value);
+  console.log('setItem' + args);
+  console.log(args);
+});
+
+ipcRenderer.on('LOCALSTORAGEMAIN_REMOVEITEM', (event, args) => {
+  event.returnValue = localStorage.removeItem(args);
+});
+
+
+    </script>
+  </head>
+</html>
