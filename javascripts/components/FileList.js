@@ -5,7 +5,15 @@ var FileList = React.createClass({
   render: function() {
     let filesAsList = [];
     if(this.props.fileList){
-      filesAsList = this.props.fileList.map(file => {
+      let fileList = this.props.fileList.slice();
+      fileList.sort((a, b) => {
+        if(a.birthtime < b.birthtime) return 1;
+        return -1;
+      });
+      filesAsList = fileList.map(file => {
+        if(file.url != null){
+          return <li key={file.path}>{ file.path } - <b>{ file.url }</b></li>;
+        }
         return <li key={file.path}>{ file.path }</li>
       });
     }

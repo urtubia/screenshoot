@@ -4,6 +4,7 @@ const s3 = require('s3');
 const uuid = require('node-uuid');
 const child_process = require('child_process');
 const { ipcMain } = require('electron');
+const localStorageMain = require('./localstoragemain');
 var exec = child_process.exec;
 
 let registeredWindows = [];
@@ -71,10 +72,19 @@ function startWatching() {
       fs.stat(path, (err, stats) => {
         var now = new Date();
         var timeSinceStartWatch = (now - startWatchTime);
-        files.push({path: path});
-        registeredWindows.map(win => {
-          win.webContents.send('FILE_ADDED', {
-            path: path
+        localStorageMain.getItem('URL.' + path).then( (value) => {
+          registeredWindows.map(win => {
+            win.webContents.send('FILE_ADDED', {
+              path: path,
+              url: value,
+              birthtime: stats.birthtime
+            });
+          });
+
+          files.push({
+            path: path,
+            url: value,
+            birthtime: stats.birthtime
           });
         });
 
@@ -107,8 +117,16 @@ function startWatching() {
             body: `${url} copied to clipboard`
           };
           //new Notification('basic', notificationOptions);
-        });
+          localStorageMain.setItem('URL.'+path, url);
 
+          registeredWindows.map(win => {
+              win.webContents.send('FILE_UPLOADED', {
+                path: path,
+                url: url,
+                birthtime: stats.birthtime
+              });
+          });
+        });
       });
     });
   });
