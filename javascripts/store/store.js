@@ -4,6 +4,9 @@ import { ipcRenderer } from 'electron';
 
 const initialState = {
   fileList: [],
+  appTab: {
+    current: 'FileList'
+  }
 };
 
 function reducer(state = initialState, action)
@@ -36,6 +39,13 @@ function reducer(state = initialState, action)
 
       return { ...state,
         fileList: fileList
+      }
+    case 'CHANGE_APP_TAB':
+      return { ...state,
+        appTab: {
+          ...state.appTab,
+          current: action.payload
+        }
       }
 
     default:
@@ -77,7 +87,6 @@ ipcRenderer.on('FILE_UPLOADED', (event, payload) => {
     }
   });
 });
-
 
 module.exports = {
   store: store,

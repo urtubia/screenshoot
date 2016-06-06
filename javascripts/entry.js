@@ -3,17 +3,8 @@
 import ReactDOM from "react-dom";
 import React from "react";
 import { Provider, connect } from 'react-redux'
-import FileList from "./components/FileList"
 import { store } from "./store/store"
-
-
-var App = React.createClass({
-  render: function() {
-    return (<div>
-            <FileList/>
-            </div>)
-  }
-});
+import App from "./components/App"
 
 var MainComponent = React.createClass({
   render: function() {
